@@ -33,16 +33,17 @@ const inputRef = formRef.querySelector("input");
 const checkboxRef = formRef.querySelector('input[type="checkbox"]');
 console.dir(checkboxRef);
 
-//1)
-addBlocksRef.forEach((item) => item.remove());
+const deleteAdd = (arr) => {
+  arr.forEach((item) => item.remove());
+};
+deleteAdd(addBlocksRef);
 
 //2)
-genre.textContent = "драма";
-
-// 3)
-promoBgRef.style.backgroundImage = "url(../img/bg.jpg)";
-
-// 4,5))
+const makeChanges = (genre, bgRef) => {
+  genre.textContent = "драма";
+  bgRef.style.backgroundImage = "url(../img/bg.jpg)";
+};
+makeChanges(genre, promoBgRef);
 
 filmListReneder();
 
@@ -50,6 +51,7 @@ formRef.addEventListener("submit", handleFilmAdd);
 
 listItemRef.addEventListener("click", handleFilmsDelete);
 
+// отвечает за удаление со списка и с базы данных
 function handleFilmsDelete(event) {
   if (event.target.className === "delete") {
     const filmtToDelete = event.target.parentNode.textContent.slice(3);
@@ -61,6 +63,7 @@ function handleFilmsDelete(event) {
   }
 }
 
+//добавляет введенный фильм в список и отображает на странице
 function handleFilmAdd(event) {
   event.preventDefault();
   const filmToAdd = capitalizer(inputRef.value);
@@ -79,12 +82,14 @@ function handleFilmAdd(event) {
   filmListReneder();
 }
 
+//проверяет галочку в чекбоксе
 function checkChecked() {
   if (checkboxRef.checked) {
     console.log("Добавляем любимый фильм");
   }
 }
 
+//все для рендеринга
 function filmListReneder() {
   // фильтр уникальных значений
   movieDB.movies = [...new Set(movieDB.movies)];
@@ -100,6 +105,7 @@ function filmListReneder() {
   listItemRef.insertAdjacentHTML("afterbegin", newArray.join(""));
 }
 
+// строка рендеринга (для добавление в масив списка)
 function liCreator(film, i) {
   const toInsert = `<li class="promo__interactive-item">${
     i + 1
@@ -107,33 +113,9 @@ function liCreator(film, i) {
   return toInsert;
 }
 
+// функция для типизации ввода (первая заглавная, остальные маленькие)
 function capitalizer(string) {
   const capitalizedString =
     string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   return capitalizedString;
 }
-
-// ==== вариант если всегда показывает только 5 фильмов на странице ===============
-
-/* const listItemRef = document.querySelectorAll(".promo__interactive-item");
-
-listItemRef.forEach((item, i) => {
-  item.textContent = `${i + 1}. ${movieDB.movies[i]}`;
-}); */
-
-/* Задания на урок:
-
-1) Реализовать функционал, что после заполнения формы и нажатия кнопки "Подтвердить" - 
-новый фильм добавляется в список. Страница не должна перезагружаться.
-Новый фильм должен добавляться в movieDB.movies.
-Для получения доступа к значению input - обращаемся к нему как input.value;
-P.S. Здесь есть несколько вариантов решения задачи, принимается любой, но рабочий.
-
-2) Если название фильма больше, чем 21 символ - обрезать его и добавить три точки
-
-3) При клике на мусорную корзину - элемент будет удаляться из списка (сложно)
-
-4) Если в форме стоит галочка "Сделать любимым" - в консоль вывести сообщение: 
-"Добавляем любимый фильм"
-
-5) Фильмы должны быть отсортированы по алфавиту */
